@@ -6,6 +6,8 @@ from zeep.exceptions import Fault as SoapFault
 
 from src.dhl.requests.base_request import BaseRequest
 from src.dhl.structures.address import Address
+from src.dhl.structures.array_of_piece_definition import ArrayOfPieceDefinition
+from src.dhl.structures.array_of_shipment_full_data import ArrayOfShipmentFullData
 from src.dhl.structures.auth_data import AuthData
 from src.dhl.structures.payment_data import PaymentData
 from src.dhl.structures.piece_definition import PieceDefinition
@@ -28,13 +30,14 @@ class CreateShipment(BaseRequest):
         payment = self.build_payment()
         service = self.build_service(service_data)
 
-        shipment_full_data = ShipmentFullData(shipper=shipper, receiver=receiver, piece_list=pieces, payment=payment,
-                                              service=service, shipment_date=shipment_date, content=content)
-        client_shipment_full_data = shipment_full_data.build_client_object_recursive(self.type_factory)
-        client_shipment_full_data_items = self.type_factory.ArrayOfShipmentfulldata(item=client_shipment_full_data)
+        array_of_shipment_full_data = self.build_array_of_shipment_full_data(shipper=shipper, receiver=receiver,
+                                                                             pieces=pieces, payment=payment,
+                                                                             service=service,
+                                                                             shipment_date=shipment_date,
+                                                                             content=content)
 
         try:
-            result = self.client.service.createShipments(authData=auth_data, shipments=client_shipment_full_data_items)
+            result = self.client.service.createShipments(authData=auth_data, shipments=array_of_shipment_full_data)
         except SoapFault as e:
             result = {
                 "success": False,
@@ -56,8 +59,9 @@ class CreateShipment(BaseRequest):
                                street=data['street'], house_number=data['houseNo'], country=data['country'])
 
     @staticmethod
-    def build_pieces(packages: List[dict]) -> List[PieceDefinition]:
-        return [PieceDefinition(**piece) for piece in packages]
+    def build_pieces(packages: List[dict]):
+        pieces = [PieceDefinition(**piece) for piece in packages]
+        return ArrayOfPieceDefinition(items=pieces)
 
     @staticmethod
     def build_payment() -> PaymentData:
@@ -71,5 +75,10 @@ class CreateShipment(BaseRequest):
         auth_data = AuthData()
         return auth_data.build_client_object(self.type_factory.AuthData)
 
-    def build_shipment_full_data(self, shipper):
-        full_data = ShipmentFullData(shipper=shipper)
+    def build_array_of_shipment_full_data(self, shipper: Address, receiver: ReceiverAddress,
+                                          pieces: ArrayOfPieceDefinition, payment, service, shipment_date, content):
+        shipment_full_data = ShipmentFullData(shipper=shipper, receiver=receiver, piece_list=pieces, payment=payment,
+                                              service=service, shipment_date=shipment_date, content=content)
+
+        array_of_shipment_full_data = ArrayOfShipmentFullData(items=[shipment_full_data])
+        return array_of_shipment_full_data.build_client_object_recursive(self.type_factory)

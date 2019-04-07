@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from typing import List
 
 from src.dhl.structures.address import Address
+from src.dhl.structures.array_of_piece_definition import ArrayOfPieceDefinition
 from src.dhl.structures.payment_data import PaymentData
-from src.dhl.structures.piece_definition import PieceDefinition
 from src.dhl.structures.receiver_address import ReceiverAddress
 from src.dhl.structures.service_definition import ServiceDefinition
 from src.dhl.structures.structure_base import StructureBase
@@ -13,7 +12,7 @@ from src.dhl.structures.structure_base import StructureBase
 class ShipmentFullData(StructureBase):
     shipper: Address
     receiver: ReceiverAddress
-    piece_list: List[PieceDefinition]
+    piece_list: ArrayOfPieceDefinition
     payment: PaymentData
     service: ServiceDefinition
     shipment_date: str
@@ -32,8 +31,7 @@ class ShipmentFullData(StructureBase):
         return client_type_factory.ShipmentFullData(
             shipper=self.shipper.build_client_object(client_type_factory.Address),
             receiver=self.receiver.build_client_object(client_type_factory.ReceiverAddress),
-            pieceList=client_type_factory.ArrayOfPiecedefinition(
-                item=[pd.build_client_object(client_type_factory.PieceDefinition) for pd in self.piece_list]),
+            pieceList=self.piece_list.build_client_object_recursive(client_type_factory),
             payment=self.payment.build_client_object(client_type_factory.PaymentData),
             service=self.service.build_client_object(client_type_factory.ServiceDefinition),
             shipmentDate=self.shipment_date,
