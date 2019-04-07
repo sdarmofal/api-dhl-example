@@ -39,7 +39,7 @@ class CreateShipment(BaseRequest):
         try:
             result = self.client.service.createShipments(authData=auth_data, shipments=array_of_shipment_full_data)
         except SoapFault as e:
-            result = {
+            return {
                 "success": False,
                 "response": e.message,
             }
