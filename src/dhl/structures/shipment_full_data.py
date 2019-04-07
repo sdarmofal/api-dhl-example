@@ -32,7 +32,8 @@ class ShipmentFullData(StructureBase):
         return client_type_factory.ShipmentFullData(
             shipper=self.shipper.build_client_object(client_type_factory.Address),
             receiver=self.receiver.build_client_object(client_type_factory.ReceiverAddress),
-            pieceList=[pd.build_client_object(client_type_factory.PieceDefinition) for pd in self.piece_list],
+            pieceList=client_type_factory.ArrayOfPiecedefinition(
+                item=[pd.build_client_object(client_type_factory.PieceDefinition) for pd in self.piece_list]),
             payment=self.payment.build_client_object(client_type_factory.PaymentData),
             service=self.service.build_client_object(client_type_factory.ServiceDefinition),
             shipmentDate=self.shipment_date,

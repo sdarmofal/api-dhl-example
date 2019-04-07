@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+from zeep import helpers
 from zeep.exceptions import Fault as SoapFault
 
 from src.dhl.requests.base_request import BaseRequest
@@ -15,7 +16,7 @@ from src.dhl.structures.shipment_full_data import ShipmentFullData
 
 class CreateShipment(BaseRequest):
     def __init__(self, client):
-        self.client = client
+        super().__init__(client)
         self.type_factory = self.client.type_factory('ns0')
 
     def request(self, shipper_data: dict, receiver_data: dict, packages_data: list, service_data: dict,
@@ -30,14 +31,19 @@ class CreateShipment(BaseRequest):
         shipment_full_data = ShipmentFullData(shipper=shipper, receiver=receiver, piece_list=pieces, payment=payment,
                                               service=service, shipment_date=shipment_date, content=content)
         client_shipment_full_data = shipment_full_data.build_client_object_recursive(self.type_factory)
+        client_shipment_full_data_items = self.type_factory.ArrayOfShipmentfulldata(item=client_shipment_full_data)
+
         try:
-            result = self.client.service.createShipments(authData=auth_data, shipments=[client_shipment_full_data])
+            result = self.client.service.createShipments(authData=auth_data, shipments=client_shipment_full_data_items)
         except SoapFault as e:
             result = {
                 "success": False,
-                "error": e.message,
+                "response": e.message,
             }
-        return result
+        return {
+            "success": True,
+            "response": helpers.serialize_object(result)
+        }
 
     @staticmethod
     def build_shipper(data: dict) -> Address:
