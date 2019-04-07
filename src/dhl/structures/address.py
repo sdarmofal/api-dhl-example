@@ -16,7 +16,5 @@ class Address(StructureBase):
     contact_email: str = None
 
     def build_client_object(self, client_type):
-        client_type(name=self.name, postalCode=self.postal_code, city=self.city, street=self.street,
-                    houseNumber=self.house_number, apartmentNumber=self.apartment_number,
-                    contactPerson=self.contact_person, contactPhone=self.contact_phone,
-                    contactEmail=self.contact_person)
+        return client_type(name=self.name, postalCode=self.postal_code, city=self.city, street=self.street,
+                           houseNumber=self.house_number, apartmentNumber=self.apartment_number)

@@ -10,6 +10,7 @@ from src.dhl.structures.payment_data import PaymentData
 from src.dhl.structures.piece_definition import PieceDefinition
 from src.dhl.structures.receiver_address import ReceiverAddress
 from src.dhl.structures.service_definition import ServiceDefinition
+from src.dhl.structures.shipment_full_data import ShipmentFullData
 
 
 class CreateShipment(BaseRequest):
@@ -26,9 +27,11 @@ class CreateShipment(BaseRequest):
         payment = self.build_payment()
         service = self.build_service(service_data)
 
-        # full_data = ShipmentFullData()
+        shipment_full_data = ShipmentFullData(shipper=shipper, receiver=receiver, piece_list=pieces, payment=payment,
+                                              service=service, shipment_date=shipment_date, content=content)
+        client_shipment_full_data = shipment_full_data.build_client_object_recursive(self.type_factory)
         try:
-            result = self.client.service.createShipments(authData=auth_data, shipments=[])
+            result = self.client.service.createShipments(authData=auth_data, shipments=[client_shipment_full_data])
         except SoapFault as e:
             result = {
                 "success": False,
@@ -36,10 +39,10 @@ class CreateShipment(BaseRequest):
             }
         return result
 
-    def build_shipper(self, data: dict) -> Address:
-        shipper = Address(name=data['name'], postal_code=data['postalCode'], city=data['city'],
-                          street=data['street'], house_number=data['houseNo'])
-        return shipper.build_client_object(self.type_factory.AddressData)
+    @staticmethod
+    def build_shipper(data: dict) -> Address:
+        return Address(name=data['name'], postal_code=data['postalCode'], city=data['city'],
+                       street=data['street'], house_number=data['houseNo'])
 
     @staticmethod
     def build_receiver(data: dict) -> ReceiverAddress:
@@ -61,3 +64,6 @@ class CreateShipment(BaseRequest):
     def build_auth_data(self):
         auth_data = AuthData()
         return auth_data.build_client_object(self.type_factory.AuthData)
+
+    def build_shipment_full_data(self, shipper):
+        full_data = ShipmentFullData(shipper=shipper)
