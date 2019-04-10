@@ -17,10 +17,6 @@ from src.dhl.structures.shipment_full_data import ShipmentFullData
 
 
 class CreateShipment(BaseRequest):
-    def __init__(self, client):
-        super().__init__(client)
-        self.type_factory = self.client.type_factory('ns0')
-
     def request(self, shipper_data: dict, receiver_data: dict, packages_data: list, service_data: dict,
                 shipment_date: str, content: str):
         auth_data = self.build_auth_data()

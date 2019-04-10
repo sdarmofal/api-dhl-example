@@ -51,3 +51,13 @@
 	"content": "test"
 }
 ```
+
+### Courier pickup
+```json
+{
+	"shipment_id": "90006589406",
+	"pickup_date": "2019-04-11",
+	"hour_from": "09:00",
+	"hour_to": "16:00"
+}
+```
