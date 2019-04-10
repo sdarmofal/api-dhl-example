@@ -1,6 +1,8 @@
 # Example of connection with Polish DHL API
 
-## TODO: project description
+## About
+This project is an example for blog post on https://sdarmofal.dev. It's a sample of establishing connection with polish 
+DHL API.  
 
 ## Technology stack:
 * Python 3.7.3
