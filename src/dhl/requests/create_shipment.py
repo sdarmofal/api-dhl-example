@@ -18,7 +18,7 @@ from src.dhl.structures.shipment_full_data import ShipmentFullData
 
 class CreateShipment(BaseRequest):
     def request(self, shipper_data: dict, receiver_data: dict, packages_data: list, service_data: dict,
-                shipment_date: str, content: str):
+                shipment_date: str, content: str) -> dict:
         auth_data = self.build_auth_data()
         shipper = self.build_shipper(shipper_data)
         receiver = self.build_receiver(receiver_data)

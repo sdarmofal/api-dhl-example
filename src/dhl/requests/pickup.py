@@ -7,7 +7,7 @@ from src.dhl.structures.auth_data import AuthData
 
 class Pickup(BaseRequest):
 
-    def request(self, pickup_date: str, pickup_time_from: str, pickup_time_to: str, shipment_id):
+    def request(self, pickup_date: str, pickup_time_from: str, pickup_time_to: str, shipment_id) -> dict:
         auth_data = self.build_auth_data()
 
         try:

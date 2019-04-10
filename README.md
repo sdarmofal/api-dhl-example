@@ -61,3 +61,11 @@
 	"hour_to": "16:00"
 }
 ```
+
+### Get label
+```json
+{
+	"label_type": "LP", 
+	"shipment_id": "90006589406"
+}
+```
