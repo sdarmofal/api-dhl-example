@@ -9,6 +9,13 @@ DHL API.
 * Zeep
 * Falcon
 
+## Available API endpoints
+
+* `/version` - check DHL API version
+* `/shipment` - create shipment
+* `/pickup` - book courier for shipment
+* `/label` - get shipment label
+
 ## Request examples:
 ### Create shipment
 ```json
@@ -71,3 +78,20 @@ DHL API.
 	"shipment_id": "90006589406"
 }
 ```
+
+## Configuration
+
+To establish connection with DHL API you need access data. 
+If you have it, you must properly set environment variables to run this application.
+I prefer to use .env file to do this. 
+
+In project files you can find `.env.default` that contains placeholders for required
+environment variables. Save it as `.env` and change placeholders to your access data.
+
+### Environment variables
+
+* `DHL.WSDL` - url to DHL API WSDL file
+* `DHL.SAP` - payer client identifier (SAP). Necessary for payer type set to USER or SHIPPER
+* `DHL.user` - DHL client username
+* `DHL.pass` - DHL client password 
+  
