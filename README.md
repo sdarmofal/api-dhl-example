@@ -5,7 +5,7 @@ This project is an example for blog post on https://sdarmofal.dev. It's a sample
 DHL API.  
 
 ## Technology stack:
-* Python 3.7.3
+* Python 3.9.0
 * Zeep
 * Falcon
 
@@ -95,3 +95,18 @@ environment variables. Save it as `.env` and change placeholders to your access 
 * `DHL.user` - DHL client username
 * `DHL.pass` - DHL client password 
   
+## Running
+
+To run the application follow the steps from [Configuration](#configuration). Then 
+use pipenv to create environment:
+
+```shell
+pipenv install
+```
+
+After that you can run application from virtualenv:
+
+```shell
+pipenv shell
+gunicorn src.api.api:api
+```
